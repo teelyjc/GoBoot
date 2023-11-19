@@ -26,15 +26,13 @@ func NewGoBoot(TOKEN string) *goBoot {
 func (gb *goBoot) Start() {
 	commandManager := commands.NewCommandManager(gb.session)
 
-	gb.session.AddHandler(handlers.ReadyHandler)
-	gb.session.AddHandler(
-		func(
-			session *discordgo.Session,
-			interaction *discordgo.InteractionCreate,
-		) {
-			commandManager.ExecuteCommand(session, interaction)
-		},
-	)
+	gb.session.AddHandler(func(session *discordgo.Session, interaction *discordgo.InteractionCreate) {
+		commandManager.ExecuteCommand(session, interaction)
+	})
+
+	gb.session.AddHandler(func(session *discordgo.Session, ready *discordgo.Ready) {
+		handlers.ReadyHandler(session, ready, commandManager)
+	})
 
 	if err := gb.session.Open(); err != nil {
 		log.Fatalln("Error opening connection, ", err)
