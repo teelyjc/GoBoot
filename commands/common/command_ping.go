@@ -12,10 +12,12 @@ func CommandPing() *commands.Command {
 			Description: "reply with pong !",
 		},
 		Handler: func(session *discordgo.Session, interaction *discordgo.Interaction) {
+			user := interaction.Member.User.ID
+
 			session.InteractionRespond(interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
-					Content: "Pong !, <@" + interaction.User.ID + ">",
+					Content: "Pong ! <@" + user + ">",
 				},
 			})
 		},
